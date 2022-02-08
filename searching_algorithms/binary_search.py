@@ -17,6 +17,9 @@ class BinarySearch(SearchingAlgorithm):
                 return _binary_search(array, value, start_index, middle_index - 1)
 
         return _binary_search(array, value, 0, len(array) - 1)
+    
+    def __str__(self):
+        return "binary_search"
 
 
 if __name__ == "__main__":

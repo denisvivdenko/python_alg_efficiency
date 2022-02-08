@@ -21,6 +21,8 @@ class InterpolationSearch(SearchingAlgorithm):
 
         return _interpolationSearch(array, value, start_index=0, end_index=len(array) - 1)
 
+    def __str__(self):
+        return "interpolation_search"
 
 if __name__ == "__main__":
     from ..timer import Timer

@@ -16,6 +16,8 @@ class ExponentialSearch(SearchingAlgorithm):
         lower_bound = int(index / 2)
         return lower_bound + BinarySearch(array[lower_bound: index], value).get_result()
 
+    def __str__(self):
+        return "exponential_search"
 
 if __name__ == "__main__":
     from ..timer import Timer
