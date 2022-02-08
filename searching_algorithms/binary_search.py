@@ -1,4 +1,5 @@
 from typing import List
+import math
 
 from searching_algorithms.searching_algorithm import SearchingAlgorithm
 
@@ -8,7 +9,7 @@ class BinarySearch(SearchingAlgorithm):
             if start_index > end_index:
                 raise Exception("Binary search: value have not been found.")
                 
-            middle_index = int(start_index + (end_index - start_index) / 2)
+            middle_index = math.ceil(start_index + (end_index - start_index) / 2)
             if array[middle_index] == value:
                 return middle_index
             elif array[middle_index] < value:

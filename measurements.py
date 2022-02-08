@@ -20,7 +20,7 @@ measurements = {key: [] for key in sizes}
 algorithms = [BinarySearch, ExponentialSearch, InterpolationSearch]
 timer = Timer()
 
-array = np.random.randint(0, 100000000, size=10**9)
+array = np.sort(np.random.randint(0, 10**9, size=10**6))
 
 def ecdf(array):
     x = np.sort(array)
@@ -34,10 +34,10 @@ def bernoulli_trial(array: List[int], size: int = 10, slice: int = 10) -> List[i
     searching_elements = [np.random.choice(array[:slice]) for _ in range(size)]
     for element in searching_elements:
         timer.start_measuring()
-        BinarySearch(array, element)
+        BinarySearch(array, element).get_result()
         first_algorithm.append(timer.stop_measuring())
         timer.start_measuring()
-        ExponentialSearch(array, element)
+        ExponentialSearch(array, element).get_result()
         second_algorithm.append(timer.stop_measuring())
 
     return [np.array(first_algorithm), np.array(second_algorithm)]
@@ -45,8 +45,8 @@ def bernoulli_trial(array: List[int], size: int = 10, slice: int = 10) -> List[i
 compare = lambda x: np.sum(x[0] > x[1])
 # compare2 = lambda x: np.sum(x[0] < x[1])
 
-binomial_distribution = np.array([compare(bernoulli_trial(array, size=100, slice=len(array))) for _ in range(1000)])
-binomial_distribution2 = np.array([compare(bernoulli_trial(array, size=100, slice=10)) for _ in range(1000)])
+# binomial_distribution = np.array([compare(bernoulli_trial(array, size=1000, slice=len(array))) for _ in range(1000)])
+binomial_distribution2 = np.array([compare(bernoulli_trial(array, size=1000, slice=1000)) for _ in range(1000)])
 
 # records = bernoulli_trial(array, size=100)
 
@@ -56,11 +56,11 @@ binomial_distribution2 = np.array([compare(bernoulli_trial(array, size=100, slic
 # plt.show()
 # , density=True, stacked=True
 
-_ = sns.kdeplot(binomial_distribution)
+# _ = sns.kdeplot(binomial_distribution)
 _ = sns.kdeplot(binomial_distribution2)
 _ = plt.xlabel("number of successes")
 _ = plt.ylabel("probability")
-print(f"{np.sum(binomial_distribution > 50) / len(binomial_distribution)}")
+print(f"{np.sum(binomial_distribution2 > 990) / len(binomial_distribution2)}")
 plt.show()
 
 
