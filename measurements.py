@@ -1,4 +1,5 @@
 from cmath import sqrt
+from locale import normalize
 from typing import List
 import pandas as pd
 import numpy as np
@@ -35,32 +36,36 @@ def bernoulli_trial(array: List[int], size: int = 10, slice: int = 10) -> List[i
     for element in searching_elements:
         timer.start_measuring()
         BinarySearch(array, element).get_result()
+        # BinarySearch(array, element)
         first_algorithm.append(timer.stop_measuring())
         timer.start_measuring()
         ExponentialSearch(array, element).get_result()
+        # BinarySearch(array, element)
         second_algorithm.append(timer.stop_measuring())
 
     return [np.array(first_algorithm), np.array(second_algorithm)]
 
 compare = lambda x: np.sum(x[0] > x[1])
-# compare2 = lambda x: np.sum(x[0] < x[1])
+compare2 = lambda x: np.sum(x[0] < x[1])
 
 # binomial_distribution = np.array([compare(bernoulli_trial(array, size=1000, slice=len(array))) for _ in range(1000)])
-binomial_distribution2 = np.array([compare(bernoulli_trial(array, size=1000, slice=1000)) for _ in range(1000)])
+# binomial_distribution2 = np.array([compare(bernoulli_trial(array, size=1000, slice=10000)) for _ in range(1000)])
 
 # records = bernoulli_trial(array, size=100)
 
 # print(records[0])
-# # _ = plt.hist(records[0], bins=10)
+# _ = plt.hist(records[0], bins=10)
 # _ = plt.hist(records[1])
 # plt.show()
 # , density=True, stacked=True
 
+_ = sns.kdeplot(bernoulli_trial(array, size=1000, slice=1000)[0], cumulative=True, common_norm=False, )
+_ = sns.kdeplot(bernoulli_trial(array, size=1000, slice=1000)[1], cumulative=True, common_norm=False, )
 # _ = sns.kdeplot(binomial_distribution)
-_ = sns.kdeplot(binomial_distribution2)
+# _ = sns.kdeplot(binomial_distribution2)
 _ = plt.xlabel("number of successes")
 _ = plt.ylabel("probability")
-print(f"{np.sum(binomial_distribution2 > 990) / len(binomial_distribution2)}")
+# print(f"{np.sum(binomial_distribution2 > 990) / len(binomial_distribution2)}")
 plt.show()
 
 

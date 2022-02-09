@@ -5,11 +5,9 @@ from typing import List
 
 from searching_algorithms.searching_algorithm import SearchingAlgorithm
 from searching_algorithms.binary_search import BinarySearch
-from steps_counter import StepsCounter
 
 class ExponentialSearch(SearchingAlgorithm):
     def _search_value(self, array: List[int], value: int) -> int:
-        steps_counter = StepsCounter()
         if len(array) <= 0:
             raise Exception("Eponential search: cannot find value.")
 
