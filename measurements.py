@@ -1,5 +1,6 @@
 from cmath import sqrt
 from locale import normalize
+from pyclbr import Function
 from typing import List
 import pandas as pd
 import numpy as np
@@ -10,77 +11,39 @@ from tqdm import tqdm
 from searching_algorithms.binary_search import BinarySearch
 from searching_algorithms.exponential_search import ExponentialSearch
 from searching_algorithms.interpolation_search import InterpolationSearch
+from searching_algorithms.searching_algorithm import SearchingAlgorithm
 from sorting_algorithms.insertion_sort import InsertionSort
 from timer import Timer
 
 sns.set()
 sns.set_theme()
 np.random.seed(42)
-sizes = [10, 10**2, 10**3]
-measurements = {key: [] for key in sizes}
-algorithms = [BinarySearch, ExponentialSearch, InterpolationSearch]
-timer = Timer()
 
-array = np.sort(np.random.randint(0, 10**9, size=10**6))
+class BernoulliTrial:
+    def __init__(self, algorithms: List[SearchingAlgorithm], array: list):
+        self.algorithms = algorithms
+        self.array = array
 
-def ecdf(array):
-    x = np.sort(array)
-    y = np.arange(1, len(array) + 1) / len(array)
-    _ = plt.plot(x, y, marker=".", linestyle="none")
+    def perform_experiment(self, searching_value: int) -> bool:
+        """
+            Returns True if first algorithm is faster then second.
+        """
+        def _measure_algorithm_time(algorithm: SearchingAlgorithm, array: list, value: int) -> float:
+            timer = Timer()
+            timer.start_measuring()
+            algorithm(array, value).get_result()
+            return timer.stop_measuring()
+        time_1, time_2 = _measure_algorithm_time(self.algorithms[0], self.array, searching_value), _measure_algorithm_time(self.algorithms[1], self.array, searching_value)
+        return time_1 < time_2
 
+def binomial_distribution(bernoulli_trial: BernoulliTrial, trials_number: int, size: int) -> list:
+    experiment_results = []
+    for _ in range(size):
+        for searching_value in np.random.randint(0, 10**6, size=trials_number):
+            experiment_results.append(bernoulli_trial.perform_experiment(searching_value))
+    return experiment_results
 
-def bernoulli_trial(array: List[int], size: int = 10, slice: int = 10) -> List[int]:
-    first_algorithm = []
-    second_algorithm = []
-    searching_elements = [np.random.choice(array[:slice]) for _ in range(size)]
-    for element in searching_elements:
-        timer.start_measuring()
-        BinarySearch(array, element).get_result()
-        # BinarySearch(array, element)
-        first_algorithm.append(timer.stop_measuring())
-        timer.start_measuring()
-        ExponentialSearch(array, element).get_result()
-        # BinarySearch(array, element)
-        second_algorithm.append(timer.stop_measuring())
-
-    return [np.array(first_algorithm), np.array(second_algorithm)]
-
-compare = lambda x: np.sum(x[0] > x[1])
-compare2 = lambda x: np.sum(x[0] < x[1])
-
-# binomial_distribution = np.array([compare(bernoulli_trial(array, size=1000, slice=len(array))) for _ in range(1000)])
-# binomial_distribution2 = np.array([compare(bernoulli_trial(array, size=1000, slice=10000)) for _ in range(1000)])
-
-# records = bernoulli_trial(array, size=100)
-
-# print(records[0])
-# _ = plt.hist(records[0], bins=10)
-# _ = plt.hist(records[1])
-# plt.show()
-# , density=True, stacked=True
-
-_ = sns.kdeplot(bernoulli_trial(array, size=1000, slice=1000)[0], cumulative=True, common_norm=False, )
-_ = sns.kdeplot(bernoulli_trial(array, size=1000, slice=1000)[1], cumulative=True, common_norm=False, )
-# _ = sns.kdeplot(binomial_distribution)
-# _ = sns.kdeplot(binomial_distribution2)
-_ = plt.xlabel("number of successes")
-_ = plt.ylabel("probability")
-# print(f"{np.sum(binomial_distribution2 > 990) / len(binomial_distribution2)}")
-plt.show()
-
-
-# ecdf(binomial_distribution)
-# ecdf(binomial_distribution2)
-
-
-# for size in tqdm(sizes):
-#     print(f"### SIZE: {size}")
-#     array = np.random.randint(0, 100, size=size)
-#     searching_value = np.random.choice(array)
-#     sorted_array = InsertionSort(array).get_result()   
-#     for algorithm in algorithms: 
-#         timer.start_measuring()
-#         algorithm(sorted_array, searching_value)
-#         print(f"{timer.stop_measuring()%60:f}s")
-
+if __name__ == "__main__":
+    bernoulli_trial = BernoulliTrial(algorithms=[BinarySearch, ExponentialSearch], array=list(range(10**6)))
+    print(binomial_distribution(bernoulli_trial=bernoulli_trial, trials_number=10**3, size=10**3))
 
