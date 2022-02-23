@@ -1,0 +1,4 @@
+from timer import Timer
+from iterative_and_recursive_algorithms.iterative_algorithm import dot_product as dot_product_iter
+from iterative_and_recursive_algorithms.recursion import dot_product as dot_product_recursive
+
